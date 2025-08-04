@@ -1,0 +1,65 @@
+openapi: 3.0.0
+info:
+  title: Vulnerable Demo API
+  version: "1.0"
+  description: >
+    Esta API contiene vulnerabilidades comunes como SQL Injection, XSS y falta de autenticación.
+
+servers:
+  - url: http://localhost:5000
+
+paths:
+  /init:
+    get:
+      summary: Inicializa la base de datos
+      responses:
+        '200':
+          description: Base de datos inicializada correctamente
+
+  /login:
+    post:
+      summary: Inicia sesión (vulnerable a SQLi)
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login exitoso
+        '401':
+          description: Login fallido
+
+  /greet:
+    get:
+      summary: Saluda al usuario (vulnerable a XSS)
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          required: true
+          description: Nombre del usuario
+      responses:
+        '200':
+          description: Saludo personalizado
+
+  /admin:
+    get:
+      summary: Devuelve datos sensibles (sin autenticación)
+      responses:
+        '200':
+          description: Datos sensibles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  secret:
+                    type: string
